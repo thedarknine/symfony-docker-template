@@ -11,34 +11,34 @@ tasks:
         desc: Build and start the containers
         cmds:
             - '{{.COMPOSE}} up -d --build'
-    
+
     down:
         desc: Stop the containers (keeps the database volume)
         cmds:
             - '{{.COMPOSE}} down'
-    
+
     restart:
         desc: Restart the containers
         cmds:
             - task: down
             - task: up
-    
+
     reset:
         desc: Stop the containers and delete the database volume
         prompt: This deletes the database volume. Continue?
         cmds:
             - '{{.COMPOSE}} down -v'
-    
+
     ps:
         desc: List the containers
         cmds:
             - '{{.COMPOSE}} ps'
-    
+
     logs:
         desc: 'Follow logs (all services, or one: task docker:logs -- db)'
         cmds:
             - '{{.COMPOSE}} logs -f {{.CLI_ARGS}}'
-    
+
     shell:
         desc: Open a shell in the PHP container
         interactive: true

@@ -8,11 +8,14 @@ vars:
     EXEC: '{{.COMPOSE}} exec app'
 
 includes:
-  docker:
-    taskfile: ./.tools/tasks/docker.yml
+    docker:
+        taskfile: ./.tools/tasks/docker.yml
 
-  symfony:
-    taskfile: ./.tools/tasks/symfony.yml
+    symfony:
+        taskfile: ./.tools/tasks/symfony.yml
+
+    lint:
+        taskfile: ./.tools/tasks/linters.yml
 
 tasks:
     default:
@@ -30,12 +33,12 @@ tasks:
         desc: Build and start the containers
         cmds:
             - task: docker:up
-    
+
     down:
         desc: Stop the containers
         cmds:
             - task: docker:down
-    
+
     restart:
         desc: Restart the containers
         cmds:

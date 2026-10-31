@@ -9,21 +9,27 @@ APP_ENV="${APP_ENV:-dev}"
 TW="${TARGET_MAX_CHAR_NUM:-24}"
 DW="${DESC_MAX_CHAR_NUM:-45}"
 
-BOLD='\033[1m'; RESET='\033[0m'
-YELLOW='\033[0;33m'; GREEN='\033[0;32m'; BLUE='\033[0;34m'
-CYAN='\033[0;36m'; PURPLE='\033[0;35m'
+# ANSI-C quoting ($'...') stores the real escape characters, so colors
+# can be passed as printf arguments instead of in the format string.
+BOLD=$'\033[1m'
+RESET=$'\033[0m'
+YELLOW=$'\033[0;33m'
+GREEN=$'\033[0;32m'
+BLUE=$'\033[0;34m'
+CYAN=$'\033[0;36m'
+PURPLE=$'\033[0;35m'
 
 printf '\n'
-printf "  ${BOLD}${YELLOW}%s${RESET} ${BLUE}(${GREEN}%s${BLUE})${RESET}\n" "$PROJECT_NAME" "$APP_ENV"
-printf "  ${BLUE}───────────────────────────────────────────────────────────────────────────────${RESET}\n\n"
-printf "  ${BOLD}Usage:${RESET}\n"
-printf "    ${YELLOW}task${RESET} ${GREEN}<task>${RESET} ${PURPLE}[-- args]${RESET}\n\n"
-printf "  ${BOLD}Available tasks:${RESET}\n"
+printf '  %s%s%s%s %s(%s%s%s)%s\n' "$BOLD" "$YELLOW" "$PROJECT_NAME" "$RESET" "$BLUE" "$GREEN" "$APP_ENV" "$BLUE" "$RESET"
+printf '  %s───────────────────────────────────────────────────────────────────────────────%s\n\n' "$BLUE" "$RESET"
+printf '  %sUsage:%s\n' "$BOLD" "$RESET"
+printf '    %stask%s %s<task>%s %s[-- args]%s\n\n' "$YELLOW" "$RESET" "$GREEN" "$RESET" "$PURPLE" "$RESET"
+printf '  %sAvailable tasks:%s\n' "$BOLD" "$RESET"
 
 task --list --sort none 2>/dev/null | awk \
-  -v yellow="$(printf "$YELLOW")" -v cyan="$(printf "$CYAN")" \
-  -v purple="$(printf "$PURPLE")" -v reset="$(printf "$RESET")" \
-  -v tw="$TW" -v dw="$DW" '
+    -v yellow="$YELLOW" -v cyan="$CYAN" \
+    -v purple="$PURPLE" -v reset="$RESET" \
+    -v tw="$TW" -v dw="$DW" '
   /^\* / {
     line = substr($0, 3)
     if (!match(line, /^[^ ]+:[ \t]+/)) next

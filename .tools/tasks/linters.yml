@@ -1,0 +1,36 @@
+# https://taskfile.dev
+version: '3'
+
+vars:
+    CONFIG_DIR: .tools/config
+    SHELL_FILES: .docker/*.sh .tools/scripts/*.sh
+
+tasks:
+    all:
+        desc: Run all linters (yaml, shell, docker, secrets)
+        cmds:
+            - task: yaml
+            - task: shell
+            - task: docker
+            - task: secrets
+
+    yaml:
+        desc: Validate YAML files with yamllint
+        cmds:
+            - '{{.EXEC}} yamllint -c {{.CONFIG_DIR}}/yamllint.yaml .tools/ Taskfile.yml docker-compose.yaml'
+
+    shell:
+        desc: Check shell scripts with shellcheck and shfmt
+        cmds:
+            - '{{.EXEC}} sh -c "shellcheck -x {{.SHELL_FILES}}"'
+            - '{{.EXEC}} sh -c "shfmt -d -i 4 {{.SHELL_FILES}}"'
+
+    docker:
+        desc: Validate Dockerfiles with hadolint
+        cmds:
+            - '{{.EXEC}} hadolint --config {{.CONFIG_DIR}}/hadolint.yaml .docker/php.Dockerfile'
+
+    secrets:
+        desc: Scan git history for secrets with gitleaks
+        cmds:
+            - '{{.EXEC}} gitleaks git --no-banner -v -c {{.CONFIG_DIR}}/gitleaks.toml .'
