@@ -1,0 +1,23 @@
+# https://taskfile.dev
+version: '3'
+
+tasks:
+    install:
+        desc: Install Composer dependencies
+        cmds:
+            - '{{.EXEC}} composer install'
+
+    composer:
+        desc: 'Run Composer (task symfony:composer -- require symfony/lock)'
+        cmds:
+            - '{{.EXEC}} composer {{.CLI_ARGS}}'
+
+    console:
+        desc: 'Run the Symfony console (task symfony:console -- cache:clear)'
+        cmds:
+            - '{{.EXEC}} bin/console {{.CLI_ARGS}}'
+
+    cc:
+        desc: Clear the Symfony cache (task symfony:cc -- env=prod)
+        cmds:
+            - '{{.EXEC}} bin/console cache:clear {{.CLI_ARGS}}'
