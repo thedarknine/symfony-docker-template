@@ -30,15 +30,12 @@ PACKAGES="
     yamllint
 "
 
+# Not listed: pdo, opcache, dom, mbstring are already built into the official php image
 PHP_EXTENSIONS="
     pcov
-    pdo
     pdo_mysql
     gd
-    opcache
     intl
-    dom
-    mbstring
     xsl
     exif
     pcntl
