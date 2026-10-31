@@ -1,0 +1,85 @@
+# https://taskfile.dev
+version: '3'
+
+dotenv: ['.env.local', '.env']
+
+vars:
+    COMPOSE: docker compose
+    EXEC: '{{.COMPOSE}} exec app'
+
+tasks:
+    default:
+        desc: List available tasks
+        silent: true
+        cmds:
+            - task --list
+
+    # ==========================================================================
+    # DOCKER
+    # ==========================================================================
+    up:
+        desc: Build and start the containers
+        cmds:
+            - '{{.COMPOSE}} up -d --build'
+
+    down:
+        desc: Stop the containers (keeps the database volume)
+        cmds:
+            - '{{.COMPOSE}} down'
+
+    restart:
+        desc: Restart the containers
+        cmds:
+            - task: down
+            - task: up
+
+    reset:
+        desc: Stop the containers and delete the database volume
+        prompt: This deletes the database volume. Continue?
+        cmds:
+            - '{{.COMPOSE}} down -v'
+
+    ps:
+        desc: List the containers
+        cmds:
+            - '{{.COMPOSE}} ps'
+
+    logs:
+        desc: 'Follow logs (all services, or one: task logs -- db)'
+        cmds:
+            - '{{.COMPOSE}} logs -f {{.CLI_ARGS}}'
+
+    shell:
+        desc: Open a shell in the PHP container
+        interactive: true
+        cmds:
+            - '{{.EXEC}} bash'
+
+    # ==========================================================================
+    # SYMFONY
+    # ==========================================================================
+    install:
+        desc: Install Composer dependencies
+        cmds:
+            - '{{.EXEC}} composer install'
+
+    composer:
+        desc: 'Run Composer (task composer -- require symfony/lock)'
+        cmds:
+            - '{{.EXEC}} composer {{.CLI_ARGS}}'
+
+    console:
+        desc: 'Run the Symfony console (task console -- cache:clear)'
+        cmds:
+            - '{{.EXEC}} bin/console {{.CLI_ARGS}}'
+
+    cc:
+        desc: Clear the Symfony cache
+        cmds:
+            - '{{.EXEC}} bin/console cache:clear'
+
+    init:
+        desc: Set up the project from scratch (build, start, install)
+        cmds:
+            - task: up
+            - task: install
