@@ -1,11 +1,16 @@
 # https://taskfile.dev
 version: '3'
 
+# Hide task's own "task: [name] command" lines; tasks print their messages through UI
+silent: true
+
 dotenv: ['.env.local', '.env']
 
 vars:
     COMPOSE: docker compose
     EXEC: '{{.COMPOSE}} exec app'
+    # Standardized output: {{.UI}} title|subtitle|success|error|warning|info|elapsed|link
+    UI: bash .tools/scripts/utils.sh
 
 includes:
     docker:
@@ -19,13 +24,11 @@ includes:
 
 tasks:
     default:
-        silent: true
         cmds:
             - task: help
 
     help:
         desc: Show this help message
-        silent: true
         cmds:
             - bash .tools/scripts/help.sh
 

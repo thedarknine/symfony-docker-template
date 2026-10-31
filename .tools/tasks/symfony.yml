@@ -5,7 +5,9 @@ tasks:
     install:
         desc: Install Composer dependencies
         cmds:
-            - '{{.EXEC}} composer install'
+            - '{{.UI}} subtitle "📦 Installing Composer dependencies"'
+            - '{{.EXEC}} composer install || { {{.UI}} error "Composer install failed."; exit 1; }'
+            - '{{.UI}} success "Composer dependencies installed."'
 
     composer:
         desc: 'Run Composer (task symfony:composer -- require symfony/lock)'
@@ -20,4 +22,6 @@ tasks:
     cc:
         desc: Clear the Symfony cache (task symfony:cc -- env=prod)
         cmds:
-            - '{{.EXEC}} bin/console cache:clear {{.CLI_ARGS}}'
+            - '{{.UI}} subtitle "🧹 Clearing the Symfony cache"'
+            - '{{.EXEC}} bin/console cache:clear {{.CLI_ARGS}} || { {{.UI}} error "Cache clear failed."; exit 1; }'
+            - '{{.UI}} success "Symfony cache cleared."'

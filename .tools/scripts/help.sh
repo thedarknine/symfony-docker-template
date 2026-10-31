@@ -9,15 +9,9 @@ APP_ENV="${APP_ENV:-dev}"
 TW="${TARGET_MAX_CHAR_NUM:-24}"
 DW="${DESC_MAX_CHAR_NUM:-45}"
 
-# ANSI-C quoting ($'...') stores the real escape characters, so colors
-# can be passed as printf arguments instead of in the format string.
-BOLD=$'\033[1m'
-RESET=$'\033[0m'
-YELLOW=$'\033[0;33m'
-GREEN=$'\033[0;32m'
-BLUE=$'\033[0;34m'
-CYAN=$'\033[0;36m'
-PURPLE=$'\033[0;35m'
+# Colors (BOLD, RESET, YELLOW...) come from the shared output library
+# shellcheck source-path=SCRIPTDIR source=utils.sh
+source "$(dirname "$0")/utils.sh"
 
 printf '\n'
 printf '  %s%s%s%s %s(%s%s%s)%s\n' "$BOLD" "$YELLOW" "$PROJECT_NAME" "$RESET" "$BLUE" "$GREEN" "$APP_ENV" "$BLUE" "$RESET"
