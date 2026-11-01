@@ -57,3 +57,12 @@ tasks:
               {{.EXEC}} bin/console ux:icons:lock {{.CLI_ARGS}}
               || { {{.UI}} error "Icons lock failed."; exit 1; }
             - '{{.UI}} success "Icons saved in assets/icons/."'
+
+    build-prod:
+        desc: Check the production build in a temporary copy - no dev dependencies, minified assets, prod cache
+        cmds:
+            - '{{.UI}} subtitle "🏭 Checking the production build"'
+            - >-
+              {{.EXEC}} sh {{.TOOLS_DIR}}/scripts/build-prod.sh
+              || { {{.UI}} error "Production build failed."; exit 1; }
+            - '{{.UI}} success "Production build succeeded." "Your working copy is unchanged."'
