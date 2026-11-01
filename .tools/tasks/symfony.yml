@@ -3,11 +3,12 @@ version: '3'
 
 tasks:
     install:
-        desc: Install Composer dependencies and build Tailwind CSS
+        desc: Install Composer dependencies, build Tailwind CSS and lock the icons
         cmds:
             - '{{.UI}} subtitle "📦 Installing Composer dependencies"'
             - '{{.EXEC}} composer install || { {{.UI}} error "Composer install failed."; exit 1; }'
             - '{{.EXEC}} bin/console tailwind:build || { {{.UI}} error "Tailwind build failed."; exit 1; }'
+            - '{{.EXEC}} bin/console ux:icons:lock || { {{.UI}} error "Icons lock failed."; exit 1; }'
             - '{{.UI}} success "Composer dependencies installed."'
 
     composer:
@@ -41,3 +42,12 @@ tasks:
         cmds:
             - '{{.UI}} title "👀 Watching Tailwind CSS changes (Ctrl+C to stop)"'
             - '{{.EXEC}} bin/console tailwind:build --watch'
+
+    icons:
+        desc: Download the icons used in the templates to assets/icons/
+        cmds:
+            - '{{.UI}} subtitle "🖼️ Locking UX icons"'
+            - >-
+              {{.EXEC}} bin/console ux:icons:lock {{.CLI_ARGS}}
+              || { {{.UI}} error "Icons lock failed."; exit 1; }
+            - '{{.UI}} success "Icons saved in assets/icons/."'
