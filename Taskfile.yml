@@ -22,6 +22,9 @@ includes:
     lint:
         taskfile: ./.tools/tasks/linters.yml
 
+    check:
+        taskfile: ./.tools/tasks/check.yml
+
 tasks:
     default:
         cmds:
@@ -51,6 +54,11 @@ tasks:
         desc: Clear the Symfony cache
         cmds:
             - task: symfony:cc
+    
+    health:
+        desc: Check system requirements and project health
+        cmds:
+            - task: check:health
 
     # init:
     #     desc: Set up the project from scratch (build, start, install)
