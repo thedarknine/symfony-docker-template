@@ -2,6 +2,12 @@
 # In production, set COMPOSE_FILE=docker-compose.yaml so these services are not started.
 services:
   app:
+    build:
+      args:
+        # On Linux (and in CI), the bind-mounted project belongs to the host user: www-data gets
+        # the same uid/gid so PHP can write vendor/, var/... Defaults to 82, fine with Docker Desktop.
+        - UID=${HOST_UID:-82}
+        - GID=${HOST_GID:-82}
     depends_on:
       db:
         condition: service_healthy

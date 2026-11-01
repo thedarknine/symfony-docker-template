@@ -41,7 +41,8 @@ grumphp:
             ignore_patterns: ['#^config/reference\.php$#']
             triggered_by: [php]
 
-        # Conventional commits, checked in the commit-msg hook
+        # Conventional commits, checked in the commit-msg hook.
+        # Kept in sync with .tools/config/commitlint.config.cjs (CI).
         git_commit_message:
             enforce_capitalized_subject: false
             max_subject_width: 72

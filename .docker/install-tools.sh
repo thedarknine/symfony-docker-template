@@ -28,6 +28,7 @@ PACKAGES="
     shellcheck
     shfmt
     yamllint
+    shadow
 "
 
 # Not listed: pdo, opcache, dom, mbstring are already built into the official php image

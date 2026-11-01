@@ -30,5 +30,14 @@ COPY php/php.ini "$PHP_INI_DIR/conf.d/zz-app.ini"
 # Set working directory
 WORKDIR /var/www/html
 
+# Match the host user ids so the bind-mounted project is writable (Linux, CI).
+# Defaults keep the official www-data ids (82), fine with Docker Desktop and in production.
+# -o allows ids already used in the image (e.g. gid 20, the macOS staff group, is "dialout" in Alpine).
+# usermod/groupmod come from the shadow package, installed by install-tools.sh.
+ARG UID=82
+ARG GID=82
+RUN groupmod -o -g "$GID" www-data \
+    && usermod -o -u "$UID" -g "$GID" www-data
+
 # Security: Never run container as root in production
 USER www-data
