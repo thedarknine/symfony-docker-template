@@ -47,6 +47,11 @@ jobs:
             - name: Run the QA suite
               run: task qa
 
+            # Only for what goes to production: pull requests to main and pushes on main
+            - name: Check the production build
+              if: github.base_ref == 'main' || github.ref == 'refs/heads/main'
+              run: task symfony:build-prod
+
             - name: Show the container logs
               if: failure()
               run: docker compose logs
