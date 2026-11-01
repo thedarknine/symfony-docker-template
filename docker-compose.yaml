@@ -1,8 +1,6 @@
 services:
   app:
     container_name: project-app
-    env_file:
-      - .env
     build:
       context: .docker
       dockerfile: php.Dockerfile
@@ -15,42 +13,10 @@ services:
       - ./:/var/www/html
     networks:
       - symfony-ntwk
-    depends_on:
-      db:
-        condition: service_healthy
-
-  db:
-    image: mysql:${MYSQL_VERSION:-9.7}
-    container_name: project-db
-    restart: unless-stopped
-    env_file:
-      - .env
-    environment:
-      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASS}
-      - MYSQL_DATABASE=${DB_NAME}
-      - MYSQL_USER=${DB_USER}
-      - MYSQL_PASSWORD=${DB_PASS}
-    ports:
-      - "3306:3306"
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-    networks:
-      - symfony-ntwk
-    volumes:
-      - db-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
 
   engine:
     container_name: project-server
     image: nginx:${NGINX_VERSION:-1.30}-alpine
-    env_file:
-      - .env
     restart: unless-stopped
     ports:
       - 8000:80
@@ -61,27 +27,6 @@ services:
       - symfony-ntwk
     depends_on:
       - app
-
-  adm:
-    image: adminneoorg/adminneo:latest
-    container_name: project-adm
-    env_file:
-      - .env
-    ports:
-      - "8089:8080"
-    depends_on:
-      - db
-    restart: unless-stopped
-    environment:
-      - NEO_COLOR_VARIANT=blue
-      - NEO_DEFAULT_SERVER=db
-      - NEO_DEFAULT_DATABASE=${DB_NAME}
-    networks:
-      - symfony-ntwk
-
-volumes:
-  db-data:
-    name: project-db-data
 
 networks:
   symfony-ntwk:

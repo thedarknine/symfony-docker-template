@@ -17,3 +17,33 @@ Thumbs.db
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+
+###> symfony/asset-mapper ###
+/public/assets/
+/assets/vendor/
+###< symfony/asset-mapper ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+###< phpunit/phpunit ###
+
+# ==============================================================================
+# FRONT
+# ==============================================================================
+/node_modules/
+
+# ==============================================================================
+# TOOLS
+# ==============================================================================
+# Caches of the QA tools (phpunit, php-cs-fixer, phpstan...)
+/.tools/cache/*
+!/.tools/cache/.gitkeep
+
+###> friendsofphp/php-cs-fixer ###
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+###< friendsofphp/php-cs-fixer ###
+
+###> phpstan/phpstan ###
+/phpstan.neon
+###< phpstan/phpstan ###

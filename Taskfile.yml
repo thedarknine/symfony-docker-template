@@ -9,8 +9,11 @@ dotenv: ['.env.local', '.env']
 vars:
     COMPOSE: docker compose
     EXEC: '{{.COMPOSE}} exec app'
+    # Tools layout: configs, caches and scripts live under .tools/
+    TOOLS_DIR: .tools
+    CONFIG_DIR: '{{.TOOLS_DIR}}/config'
     # Standardized output: {{.UI}} title|subtitle|success|error|warning|info|elapsed|link
-    UI: bash .tools/scripts/utils.sh
+    UI: 'bash {{.TOOLS_DIR}}/scripts/utils.sh'
 
 includes:
     docker:
@@ -22,6 +25,21 @@ includes:
     lint:
         taskfile: ./.tools/tasks/linters.yml
 
+    cs:
+        taskfile: ./.tools/tasks/cs.yml
+
+    check:
+        taskfile: ./.tools/tasks/check.yml
+
+    db:
+        taskfile: ./.tools/tasks/db.yml
+
+    test:
+        taskfile: ./.tools/tasks/test.yml
+
+    quality:
+        taskfile: ./.tools/tasks/quality.yml
+
 tasks:
     default:
         cmds:
@@ -30,7 +48,7 @@ tasks:
     help:
         desc: Show this help message
         cmds:
-            - bash .tools/scripts/help.sh
+            - 'bash {{.TOOLS_DIR}}/scripts/help.sh'
 
     up:
         desc: Build and start the containers
@@ -51,6 +69,26 @@ tasks:
         desc: Clear the Symfony cache
         cmds:
             - task: symfony:cc
+
+    test:
+        desc: Run all the tests
+        cmds:
+            - task: test:all
+
+    health:
+        desc: Check system requirements and project health
+        cmds:
+            - task: check:health
+
+    qa:
+        desc: Run all checks before committing - cs, lint, quality, tests (fix=1)
+        cmds:
+            - task: cs:all
+            - task: lint:all
+            # fix=1 only applies the CS fixes: Rector refactorings stay a deliberate step
+            - task: quality:all
+              vars: { NO_REFACTOR: '1' }
+            - task: test:all
 
     # init:
     #     desc: Set up the project from scratch (build, start, install)

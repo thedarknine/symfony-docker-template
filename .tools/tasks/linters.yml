@@ -4,12 +4,12 @@ version: '3'
 # UI_NESTED hides the success box of each linter when run from lint:all
 
 vars:
-    CONFIG_DIR: .tools/config
-    SHELL_FILES: .docker/*.sh .tools/scripts/*.sh
+    SHELL_FILES: '.docker/*.sh {{.TOOLS_DIR}}/scripts/*.sh'
+    YAML_FILES: '{{.TOOLS_DIR}}/ Taskfile.yml docker-compose.yaml docker-compose.dev.yaml'
 
 tasks:
     all:
-        desc: Run all linters (yaml, shell, docker, secrets)
+        desc: Run all linters - yaml, shell, docker, secrets
         vars:
             START: { sh: date +%s }
         cmds:
@@ -31,7 +31,7 @@ tasks:
         cmds:
             - '{{.UI}} subtitle "🔭 Validating YAML files with yamllint"'
             - >-
-              {{.EXEC}} yamllint -c {{.CONFIG_DIR}}/yamllint.yaml .tools/ Taskfile.yml docker-compose.yaml
+              {{.EXEC}} yamllint -c {{.CONFIG_DIR}}/yamllint.yaml {{.YAML_FILES}}
               || { {{.UI}} error "YAML linting failed."; exit 1; }
             - '{{.UI}} success "YAML linting completed."'
 

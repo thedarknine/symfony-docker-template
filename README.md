@@ -9,8 +9,8 @@ used across my projects.
 |----------|------------------|-------------------------------|-------------|
 | `app`    | `project-app`    | PHP 8.4 FPM Alpine (custom)   | -           |
 | `engine` | `project-server` | `nginx:1.30-alpine`           | 8000        |
-| `db`     | `project-db`     | `mysql:9.7` (LTS)             | 3306        |
-| `adm`    | `project-adm`    | `adminneoorg/adminneo:latest` | 8089        |
+| `db`     | `project-db`     | `mysql:9.7` (LTS), dev only   | 3306        |
+| `adm`    | `project-adm`    | `adminneoorg/adminneo:latest`, dev only | 8089 |
 
 - Symfony 8.1 (requires PHP >= 8.4)
 - The PHP image ships with Composer 2, Symfony CLI, Node/npm, Chromium and lint tools
@@ -93,10 +93,32 @@ Versions and credentials are set in `.env`:
 | `DB_ROOT_PASS`  | `admin`     | MySQL root password             |
 | `DB_NAME`       | `project`   | Database created on first start |
 | `DB_USER`       | `project`   | Application database user       |
-| `DB_PASS`       | `Ch@ng3m3!` | Application database password   |
+| `DB_PASS`       | `ChangeMe`  | Application database password   |
 
 `.env` only holds defaults. Override them in `.env.local` (git-ignored) and keep real secrets
 out of the repository.
+
+`DATABASE_URL` is built from `DB_USER`, `DB_PASS`, `DB_NAME` and `MYSQL_VERSION`, so the
+credentials are only defined once.
+
+### Docker Compose files
+
+The services are split in two files:
+
+- `docker-compose.yaml`: services needed in every environment (`app`, `engine`)
+- `docker-compose.dev.yaml`: development services (`db`, `adm`) and the `app` → `db` dependency
+
+`.env` sets `COMPOSE_FILE=docker-compose.yaml:docker-compose.dev.yaml`, which `docker compose`
+reads automatically: in development, both files are loaded by the tasks and by plain
+`docker compose` commands.
+
+In production, the database is usually a managed service. Set these variables in the server
+(or CI) environment, they take precedence over `.env`:
+
+```bash
+COMPOSE_FILE=docker-compose.yaml
+DATABASE_URL="mysql://user:password@host:3306/name?serverVersion=9.7&charset=utf8mb4"
+```
 
 ## Project structure
 

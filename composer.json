@@ -1,26 +1,53 @@
 {
     "type": "project",
-    "license": "proprietary",
+    "license": "MIT",
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.4",
+        "php": ">=8.4.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-intl": "*",
+        "doctrine/doctrine-bundle": "^3.3",
+        "doctrine/doctrine-migrations-bundle": "^4.0",
+        "doctrine/orm": "^3.7",
+        "symfony/asset-mapper": "8.1.*",
         "symfony/console": "8.1.*",
         "symfony/dotenv": "8.1.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "8.1.*",
         "symfony/runtime": "8.1.*",
-        "symfony/yaml": "8.1.*"
+        "symfony/twig-bundle": "8.1.*",
+        "symfony/ux-icons": "^3.6",
+        "symfony/ux-twig-component": "^3.6",
+        "symfony/yaml": "8.1.*",
+        "symfonycasts/tailwind-bundle": "^1.0",
+        "twig/extra-bundle": "^3.29",
+        "twig/intl-extra": "^3.30"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.95",
+        "phpro/grumphp": "^2.26",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^2.3",
+        "phpstan/phpstan-phpunit": "^2.1",
+        "phpstan/phpstan-symfony": "^2.1",
+        "phpunit/phpunit": "^13.4",
+        "rector/rector": "^2.8",
+        "symfony/browser-kit": "8.1.*",
+        "symfony/css-selector": "8.1.*",
+        "symfony/maker-bundle": "^1.68",
+        "vincentlanglet/twig-cs-fixer": "^4.1"
     },
     "config": {
         "allow-plugins": {
-            "php-http/discovery": true,
+            "phpro/grumphp": true,
+            "phpstan/extension-installer": true,
             "symfony/flex": true,
             "symfony/runtime": true
+        },
+        "platform": {
+            "php": "8.4.1"
         },
         "bump-after-update": true,
         "sort-packages": true
@@ -50,7 +77,8 @@
     "scripts": {
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+            "assets:install %PUBLIC_DIR%": "symfony-cmd",
+            "importmap:install": "symfony-cmd"
         },
         "post-install-cmd": [
             "@auto-scripts"
@@ -63,9 +91,13 @@
         "symfony/symfony": "*"
     },
     "extra": {
+        "grumphp": {
+            "config-default-path": ".tools/config/grumphp.yml"
+        },
         "symfony": {
             "allow-contrib": false,
-            "require": "8.1.*"
+            "require": "8.1.*",
+            "docker": false
         }
     }
 }
