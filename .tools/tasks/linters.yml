@@ -5,7 +5,7 @@ version: '3'
 
 vars:
     SHELL_FILES: '.docker/*.sh {{.TOOLS_DIR}}/scripts/*.sh'
-    YAML_FILES: '{{.TOOLS_DIR}}/ Taskfile.yml docker-compose.yaml docker-compose.dev.yaml .github/'
+    YAML_FILES: '{{.TOOLS_DIR}}/ .github/ Taskfile.yml docker-compose*.yaml'
 
 tasks:
     all:
