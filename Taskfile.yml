@@ -8,7 +8,8 @@ dotenv: ['.env.local', '.env']
 
 vars:
     COMPOSE: docker compose
-    EXEC: '{{.COMPOSE}} exec app'
+    # No TTY in CI (GitHub Actions sets CI=true): -T avoids "the input device is not a TTY"
+    EXEC: '{{.COMPOSE}} exec {{if .CI}}-T {{end}}app'
     # Tools layout: configs, caches and scripts live under .tools/
     TOOLS_DIR: .tools
     CONFIG_DIR: '{{.TOOLS_DIR}}/config'

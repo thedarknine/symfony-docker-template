@@ -1,0 +1,76 @@
+# Runs the same tasks as locally: GitHub-hosted runners have Docker, so the job builds the
+# image, starts the stack with "task up" and runs "task qa" in the app container.
+name: CI
+
+on:  # yamllint disable-line rule:truthy
+    pull_request:
+    push:
+        branches: [main, develop]
+
+# A new push on the same branch or pull request cancels the previous run
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+jobs:
+    qa:
+        name: QA - cs, lint, quality, tests
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+              with:
+                  # Full history: gitleaks scans every commit (lint:secrets)
+                  fetch-depth: 0
+
+            - name: Install Task
+              uses: go-task/setup-task@v2
+              with:
+                  version: 3.x
+
+            - name: Start the containers
+              run: task up
+
+            - name: Install dependencies
+              run: task symfony:install
+
+            - name: Run the QA suite
+              run: task qa
+
+            - name: Show the container logs
+              if: failure()
+              run: docker compose logs
+
+    commitlint:
+        name: Conventional commits
+        if: github.event_name == 'pull_request'
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Install Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: lts/*
+                  cache: pnpm
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Check the commit messages of the pull request
+              run: >-
+                  pnpm exec commitlint --config .tools/config/commitlint.config.cjs
+                  --from ${{ github.event.pull_request.base.sha }}
+                  --to ${{ github.event.pull_request.head.sha }}
+                  --verbose
