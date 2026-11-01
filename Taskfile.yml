@@ -91,8 +91,33 @@ tasks:
               vars: { NO_REFACTOR: '1' }
             - task: test:all
 
-    # init:
-    #     desc: Set up the project from scratch (build, start, install)
-    #     cmds:
-    #         - task: docker:up
-    #         - task: install
+    init:
+        desc: Set up the project - name, ports, containers, dependencies, database
+        interactive: true
+        cmds:
+            - task: check:tools
+              vars: { NESTED: '1' }
+            - task: check:docker
+              vars: { NESTED: '1' }
+            - 'bash {{.TOOLS_DIR}}/scripts/init.sh'
+            # .env is only loaded when Task starts, and its values are exported to the commands:
+            # unset the ones init.sh may have changed, so that the new Task process reads them again
+            - >-
+              unset PROJECT_NAME PROJECT_SLUG APP_PORT DB_PORT ADM_PORT HOST_UID HOST_GID;
+              task setup
+
+    setup:
+        # No desc: hidden from the help, run by "task init" in a new Task process
+        cmds:
+            - task: docker:up
+              vars: { NESTED: '1' }
+            - task: symfony:install
+            - task: db:create
+              vars: { NESTED: '1' }
+            - task: db:migrate
+              vars: { NESTED: '1' }
+            - task: check:health
+            - >-
+              {{.UI}} success "{{.PROJECT_NAME}} is ready."
+              "Application: http://localhost:{{.APP_PORT}}"
+              "AdminNeo: http://localhost:{{.ADM_PORT}} - server db, credentials from .env"
