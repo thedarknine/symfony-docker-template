@@ -14,7 +14,7 @@ tasks:
             - task: phpstan
               vars: { NESTED: '1' }
             - task: rector
-              vars: { NESTED: '1' }
+              vars: { NESTED: '1', NO_REFACTOR: '{{.NO_REFACTOR}}' }
             - '{{.UI}} elapsed {{.START}}'
             - '{{.UI}} success "All quality checks passed."'
 
@@ -36,14 +36,31 @@ tasks:
     rector:
         desc: Check code upgrades and refactorings with Rector (fix=1)
         env: { UI_NESTED: '{{.NESTED}}' }
+        vars:
+            # NO_REFACTOR is set by "task qa": fix=1 then only shows the changes
+            APPLY: '{{if and .fix (not .NO_REFACTOR)}}1{{end}}'
         cmds:
-            - '{{.UI}} subtitle "🛠️ {{if .fix}}Applying{{else}}Checking{{end}} Rector refactorings"'
+            - '{{.UI}} subtitle "🛠️ {{if .APPLY}}Applying{{else}}Checking{{end}} Rector refactorings"'
             # withSymfonyContainerXml reads the compiled dev container
             - >-
               {{.EXEC}} bin/console cache:warmup --env=dev --quiet
               || { {{.UI}} error "Symfony cache warmup failed."; exit 1; }
             - >-
               {{.EXEC}} vendor/bin/rector process --config={{.CONFIG_DIR}}/rector.php
-              {{if not .fix}}--dry-run{{end}} {{.CLI_ARGS}}
+              {{if not .APPLY}}--dry-run{{end}} {{.CLI_ARGS}}
               || { {{.UI}} error "Rector found changes." "Apply them with: task quality:rector fix=1"; exit 1; }
-            - '{{.UI}} success "Rector {{if .fix}}refactorings applied{{else}}found nothing to change{{end}}."'
+            - '{{.UI}} success "Rector {{if .APPLY}}refactorings applied{{else}}found nothing to change{{end}}."'
+
+    grumphp:
+        desc: Run the GrumPHP pre-commit checks on the whole project
+        cmds:
+            - '{{.UI}} subtitle "🐘 Running GrumPHP checks"'
+            - '{{.EXEC}} vendor/bin/grumphp run {{.CLI_ARGS}} || { {{.UI}} error "GrumPHP checks failed."; exit 1; }'
+            - '{{.UI}} success "GrumPHP checks passed."'
+
+    hooks:
+        desc: Reinstall the GrumPHP git hooks - composer install already does it
+        cmds:
+            - '{{.UI}} subtitle "🪝 Installing the git hooks"'
+            - '{{.EXEC}} vendor/bin/grumphp git:init || { {{.UI}} error "Git hooks installation failed."; exit 1; }'
+            - '{{.UI}} success "Git hooks installed." "Commits run the GrumPHP checks: keep the containers up."'

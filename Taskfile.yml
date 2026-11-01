@@ -80,6 +80,16 @@ tasks:
         cmds:
             - task: check:health
 
+    qa:
+        desc: Run all checks before committing - cs, lint, quality, tests (fix=1)
+        cmds:
+            - task: cs:all
+            - task: lint:all
+            # fix=1 only applies the CS fixes: Rector refactorings stay a deliberate step
+            - task: quality:all
+              vars: { NO_REFACTOR: '1' }
+            - task: test:all
+
     # init:
     #     desc: Set up the project from scratch (build, start, install)
     #     cmds:
