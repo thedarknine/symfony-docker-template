@@ -1,0 +1,69 @@
+# https://taskfile.dev
+version: '3'
+
+# UI_NESTED hides the success box of each linter when run from lint:all
+
+vars:
+    SHELL_FILES: '.docker/*.sh {{.TOOLS_DIR}}/scripts/*.sh'
+    YAML_FILES: '{{.TOOLS_DIR}}/ .github/ Taskfile.yml docker-compose*.yaml'
+
+tasks:
+    all:
+        desc: Run all linters - yaml, shell, docker, secrets
+        vars:
+            START: { sh: date +%s }
+        cmds:
+            - '{{.UI}} title "🔍 Running all linters"'
+            - task: yaml
+              vars: { NESTED: '1' }
+            - task: shell
+              vars: { NESTED: '1' }
+            - task: docker
+              vars: { NESTED: '1' }
+            - task: secrets
+              vars: { NESTED: '1' }
+            - '{{.UI}} elapsed {{.START}}'
+            - '{{.UI}} success "All linters passed."'
+
+    yaml:
+        desc: Validate YAML files with yamllint
+        env: { UI_NESTED: '{{.NESTED}}' }
+        cmds:
+            - '{{.UI}} subtitle "🔭 Validating YAML files with yamllint"'
+            - >-
+              {{.EXEC}} yamllint -c {{.CONFIG_DIR}}/yamllint.yaml {{.YAML_FILES}}
+              || { {{.UI}} error "YAML linting failed."; exit 1; }
+            - '{{.UI}} success "YAML linting completed."'
+
+    shell:
+        desc: Check shell scripts with shellcheck and shfmt
+        env: { UI_NESTED: '{{.NESTED}}' }
+        cmds:
+            - '{{.UI}} subtitle "🐚 Checking shell scripts with shellcheck and shfmt"'
+            - >-
+              {{.EXEC}} sh -c "shellcheck -x {{.SHELL_FILES}}"
+              || { {{.UI}} error "shellcheck found issues."; exit 1; }
+            - >-
+              {{.EXEC}} sh -c "shfmt -d -i 4 {{.SHELL_FILES}}"
+              || { {{.UI}} error "shfmt found formatting issues." "Fix with: shfmt -w -i 4 <file>"; exit 1; }
+            - '{{.UI}} success "Shell scripts checked."'
+
+    docker:
+        desc: Validate Dockerfiles with hadolint
+        env: { UI_NESTED: '{{.NESTED}}' }
+        cmds:
+            - '{{.UI}} subtitle "🐳 Validating Dockerfiles with hadolint"'
+            - >-
+              {{.EXEC}} hadolint --config {{.CONFIG_DIR}}/hadolint.yaml .docker/php.Dockerfile
+              || { {{.UI}} error "hadolint found issues."; exit 1; }
+            - '{{.UI}} success "Dockerfile validation completed."'
+
+    secrets:
+        desc: Scan git history for secrets with gitleaks
+        env: { UI_NESTED: '{{.NESTED}}' }
+        cmds:
+            - '{{.UI}} subtitle "🔐 Scanning git history for secrets with gitleaks"'
+            - >-
+              {{.EXEC}} gitleaks git --no-banner -v -c {{.CONFIG_DIR}}/gitleaks.toml .
+              || { {{.UI}} error "gitleaks found potential secrets."; exit 1; }
+            - '{{.UI}} success "No secrets found."'

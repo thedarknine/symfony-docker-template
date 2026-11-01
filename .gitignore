@@ -1,52 +1,49 @@
-# Cache and logs (Symfony2)
-/app/cache/*
-/app/logs/*
-!app/cache/.gitkeep
-!app/logs/.gitkeep
+# ==============================================================================
+# SYSTEM & IDE
+# ==============================================================================
+.DS_Store
+Thumbs.db
+.idea
 
-# Email spool folder
-/app/spool/*
-
-# Cache, session files and logs (Symfony3)
-/var/cache/*
-/var/logs/*
-/var/sessions/*
-!var/cache/.gitkeep
-!var/logs/.gitkeep
-!var/sessions/.gitkeep
-
-# Logs (Symfony4)
-/var/log/*
-!var/log/.gitkeep
-
-# Parameters
-/app/config/parameters.yml
-/app/config/parameters.ini
-
-# Managed by Composer
-/app/bootstrap.php.cache
-/var/bootstrap.php.cache
-/bin/*
-!bin/console
-!bin/symfony_requirements
+# ==============================================================================
+# SYMFONY
+# ==============================================================================
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
 /vendor/
+###< symfony/framework-bundle ###
 
-# Assets and user uploads
-/web/bundles/
-/web/uploads/
+###> symfony/asset-mapper ###
+/public/assets/
+/assets/vendor/
+###< symfony/asset-mapper ###
 
-# PHPUnit
-/app/phpunit.xml
+###> phpunit/phpunit ###
 /phpunit.xml
+###< phpunit/phpunit ###
 
-# Build data
-/build/
+# ==============================================================================
+# FRONT
+# ==============================================================================
+/node_modules/
 
-# Composer PHAR
-/composer.phar
+# ==============================================================================
+# TOOLS
+# ==============================================================================
+# Caches of the QA tools (phpunit, php-cs-fixer, phpstan...)
+/.tools/cache/*
+!/.tools/cache/.gitkeep
 
-# Backup entities generated with doctrine:generate:entities command
-**/Entity/*~
+###> friendsofphp/php-cs-fixer ###
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+###< friendsofphp/php-cs-fixer ###
 
-# Embedded web-server pid file
-/.web-server-pid
+###> phpstan/phpstan ###
+/phpstan.neon
+###< phpstan/phpstan ###

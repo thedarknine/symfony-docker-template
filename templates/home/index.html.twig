@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ project_name }}{% endblock %}
+
+{% block body %}
+    <main class="flex min-h-screen flex-col items-center justify-center gap-6 bg-slate-50 text-slate-800">
+        <div class="text-center">
+            <h1 class="text-4xl font-bold text-slate-600">{{ project_name }}</h1>
+            <p class="text-slate-500">{{ 'now'|format_date('full', locale: 'fr') }}</p>
+        </div>
+
+        <twig:Alert type="success" message="Twig, Tailwind and Symfony UX are up and running." />
+    </main>
+{% endblock %}

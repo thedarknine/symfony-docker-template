@@ -1,0 +1,9 @@
+<div {{ attributes.defaults({
+    class: 'flex items-start gap-3 rounded-lg border px-4 py-3 ' ~ this.classes,
+    role: type == 'error' ? 'alert' : 'status',
+}) }}>
+    <twig:ux:icon name="{{ this.icon }}" class="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+    <div>
+        {% block content %}{{ message }}{% endblock %}
+    </div>
+</div>

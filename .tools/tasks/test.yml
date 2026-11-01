@@ -1,0 +1,38 @@
+# https://taskfile.dev
+version: '3'
+
+vars:
+    PHPUNIT: '{{.EXEC}} vendor/bin/phpunit -c {{.CONFIG_DIR}}/phpunit.xml'
+
+tasks:
+    all:
+        desc: Run all the tests (task test:all -- --filter Home)
+        cmds:
+            - '{{.UI}} subtitle "🧪 Running all the tests"'
+            - '{{.PHPUNIT}} {{.CLI_ARGS}} || { {{.UI}} error "Some tests failed."; exit 1; }'
+            - '{{.UI}} success "All tests passed."'
+
+    unit:
+        desc: Run the unit tests - tests/Unit
+        cmds:
+            - '{{.UI}} subtitle "🧪 Running the unit tests"'
+            - '{{.PHPUNIT}} --testsuite unit {{.CLI_ARGS}} || { {{.UI}} error "Some unit tests failed."; exit 1; }'
+            - '{{.UI}} success "Unit tests passed."'
+
+    functional:
+        desc: Run the functional tests - tests/Functional
+        cmds:
+            - '{{.UI}} subtitle "🧪 Running the functional tests"'
+            - >-
+              {{.PHPUNIT}} --testsuite functional {{.CLI_ARGS}}
+              || { {{.UI}} error "Some functional tests failed."; exit 1; }
+            - '{{.UI}} success "Functional tests passed."'
+
+    coverage:
+        desc: Generate the HTML code coverage report in var/coverage/
+        cmds:
+            - '{{.UI}} subtitle "📊 Generating the code coverage report"'
+            - >-
+              {{.PHPUNIT}} --coverage-html var/coverage --coverage-text
+              || { {{.UI}} error "Coverage generation failed."; exit 1; }
+            - '{{.UI}} success "Coverage report generated." "Open var/coverage/index.html"'

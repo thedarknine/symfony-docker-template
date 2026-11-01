@@ -1,0 +1,11 @@
+{
+    "name": "symfony-docker-template",
+    "private": true,
+    "description": "Frontend tooling only: assets are served by Symfony AssetMapper.",
+    "license": "MIT",
+    "packageManager": "pnpm@12.16.1",
+    "devDependencies": {
+        "@biomejs/biome": "2.6.4",
+        "@commitlint/cli": "21.2.4"
+    }
+}

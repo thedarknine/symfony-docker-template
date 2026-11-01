@@ -1,0 +1,71 @@
+# Development services, added on top of docker-compose.yaml through COMPOSE_FILE in .env.
+# In production, set COMPOSE_FILE=docker-compose.yaml so these services are not started.
+services:
+  app:
+    build:
+      args:
+        # On Linux (and in CI), the bind-mounted project belongs to the host user: www-data gets
+        # the same uid/gid so PHP can write vendor/, var/... Defaults to 82, fine with Docker Desktop.
+        - UID=${HOST_UID:-82}
+        - GID=${HOST_GID:-82}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:${MYSQL_VERSION:-9.7}
+    container_name: ${PROJECT_SLUG:-project}-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASS}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASS}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    networks:
+      - app-network
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  adm:
+    image: adminneoorg/adminneo:latest
+    container_name: ${PROJECT_SLUG:-project}-adm
+    env_file:
+      - .env
+    ports:
+      - "${ADM_PORT:-8089}:8080"
+    depends_on:
+      - db
+    restart: unless-stopped
+    environment:
+      - NEO_COLOR_VARIANT=blue
+      - NEO_DEFAULT_SERVER=db
+      - NEO_DEFAULT_DATABASE=${DB_NAME}
+    networks:
+      - app-network
+
+  # Catches every email sent by the application: web UI on MAIL_PORT, SMTP on mailpit:1025
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: ${PROJECT_SLUG:-project}-mailpit
+    restart: unless-stopped
+    ports:
+      - "${MAIL_PORT:-8025}:8025"
+    networks:
+      - app-network
+
+volumes:
+  db-data:
+    name: ${PROJECT_SLUG:-project}-db-data
