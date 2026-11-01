@@ -22,3 +22,14 @@ Thumbs.db
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+###< phpunit/phpunit ###
+
+# ==============================================================================
+# TOOLS
+# ==============================================================================
+# Caches of the QA tools (phpunit, php-cs-fixer, phpstan...)
+/.tools/cache/*
+!/.tools/cache/.gitkeep

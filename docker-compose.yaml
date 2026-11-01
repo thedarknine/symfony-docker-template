@@ -1,8 +1,6 @@
 services:
   app:
     container_name: project-app
-    env_file:
-      - .env
     build:
       context: .docker
       dockerfile: php.Dockerfile
@@ -19,8 +17,6 @@ services:
   engine:
     container_name: project-server
     image: nginx:${NGINX_VERSION:-1.30}-alpine
-    env_file:
-      - .env
     restart: unless-stopped
     ports:
       - 8000:80
