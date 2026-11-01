@@ -2,7 +2,7 @@
 version: '3'
 
 vars:
-    PHPUNIT: '{{.EXEC}} vendor/bin/phpunit -c .tools/config/phpunit.xml'
+    PHPUNIT: '{{.EXEC}} vendor/bin/phpunit -c {{.CONFIG_DIR}}/phpunit.xml'
 
 tasks:
     all:

@@ -9,8 +9,11 @@ dotenv: ['.env.local', '.env']
 vars:
     COMPOSE: docker compose
     EXEC: '{{.COMPOSE}} exec app'
+    # Tools layout: configs, caches and scripts live under .tools/
+    TOOLS_DIR: .tools
+    CONFIG_DIR: '{{.TOOLS_DIR}}/config'
     # Standardized output: {{.UI}} title|subtitle|success|error|warning|info|elapsed|link
-    UI: bash .tools/scripts/utils.sh
+    UI: 'bash {{.TOOLS_DIR}}/scripts/utils.sh'
 
 includes:
     docker:
@@ -21,6 +24,9 @@ includes:
 
     lint:
         taskfile: ./.tools/tasks/linters.yml
+
+    cs:
+        taskfile: ./.tools/tasks/cs.yml
 
     check:
         taskfile: ./.tools/tasks/check.yml
@@ -39,7 +45,7 @@ tasks:
     help:
         desc: Show this help message
         cmds:
-            - bash .tools/scripts/help.sh
+            - 'bash {{.TOOLS_DIR}}/scripts/help.sh'
 
     up:
         desc: Build and start the containers

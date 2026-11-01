@@ -2,6 +2,14 @@
 
 declare(strict_types=1);
 
+/**
+ * This file is part of MyProject project.
+ * (c) Caroline Noyer <studio@carolinenoyer.fr>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace App\Tests\Unit\Twig\Components;
 
 use App\Twig\Components\Alert;
@@ -23,7 +31,7 @@ final class AlertTest extends TestCase
     #[DataProvider('provideTypes')]
     public function testIconMatchesType(string $type, string $expectedIcon): void
     {
-        $alert = new Alert();
+        $alert       = new Alert();
         $alert->type = $type;
 
         self::assertSame($expectedIcon, $alert->getIcon());

@@ -5,7 +5,7 @@ version: '3'
 
 vars:
     REQUIRED_TOOLS: docker jq lsof
-    REQUIRED_DIRS: .tools/config .tools/scripts .tools/tasks
+    REQUIRED_DIRS: '{{.CONFIG_DIR}} {{.TOOLS_DIR}}/scripts {{.TOOLS_DIR}}/tasks'
 
 tasks:
     health:

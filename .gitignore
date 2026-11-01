@@ -33,3 +33,8 @@ Thumbs.db
 # Caches of the QA tools (phpunit, php-cs-fixer, phpstan...)
 /.tools/cache/*
 !/.tools/cache/.gitkeep
+
+###> friendsofphp/php-cs-fixer ###
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+###< friendsofphp/php-cs-fixer ###
