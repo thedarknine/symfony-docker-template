@@ -1,0 +1,7 @@
+# pnpm settings (overrides are read from this file since pnpm 10)
+overrides:
+    # Security fixes for markdownlint-cli2 transitive dependencies, until markdownlint updates them
+    # GHSA-gg6h-894w-4m9c: markdownlint pins re2js 2.8.6
+    re2js: ^2.8.7
+    # GHSA-238p-pmpm-9mq7: micromark-extension-math requires katex ^0.16
+    katex: ^0.18.2

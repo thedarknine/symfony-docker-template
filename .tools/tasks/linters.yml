@@ -5,16 +5,19 @@ version: '3'
 
 vars:
     SHELL_FILES: '.docker/*.sh {{.TOOLS_DIR}}/scripts/*.sh'
-    YAML_FILES: '{{.TOOLS_DIR}}/ .github/ Taskfile.yml docker-compose*.yaml'
+    MARKDOWN_GLOBS: '"**/*.md" "#node_modules" "#vendor" "#var"'
+    YAML_FILES: '{{.TOOLS_DIR}}/ .github/ Taskfile.yml docker-compose*.yaml pnpm-workspace.yaml'
 
 tasks:
     all:
-        desc: Run all linters - yaml, shell, docker, secrets
+        desc: Run all linters - yaml, markdown, shell, docker, secrets
         vars:
             START: { sh: date +%s }
         cmds:
             - '{{.UI}} title "🔍 Running all linters"'
             - task: yaml
+              vars: { NESTED: '1' }
+            - task: markdown
               vars: { NESTED: '1' }
             - task: shell
               vars: { NESTED: '1' }
@@ -34,6 +37,17 @@ tasks:
               {{.EXEC}} yamllint -c {{.CONFIG_DIR}}/yamllint.yaml {{.YAML_FILES}}
               || { {{.UI}} error "YAML linting failed."; exit 1; }
             - '{{.UI}} success "YAML linting completed."'
+
+    markdown:
+        desc: Validate Markdown files with markdownlint (fix=1)
+        env: { UI_NESTED: '{{.NESTED}}' }
+        cmds:
+            - '{{.UI}} subtitle "📝 {{if .fix}}Fixing{{else}}Validating{{end}} Markdown files with markdownlint"'
+            - >-
+              {{.EXEC}} pnpm exec markdownlint-cli2 --config {{.CONFIG_DIR}}/.markdownlint-cli2.jsonc
+              {{if .fix}}--fix{{end}} {{.MARKDOWN_GLOBS}}
+              || { {{.UI}} error "Markdown linting failed." "Fix with: task lint:markdown fix=1"; exit 1; }
+            - '{{.UI}} success "Markdown linting completed."'
 
     shell:
         desc: Check shell scripts with shellcheck and shfmt
