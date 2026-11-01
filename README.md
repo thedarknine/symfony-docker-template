@@ -19,6 +19,53 @@ used across my projects.
 ## Requirements
 
 - Docker with the Compose plugin (`docker compose`)
+- [Task](https://taskfile.dev/installation/) (optional, see [Installing Task](#installing-task))
+
+### Installing Task
+
+**macOS**
+
+```bash
+brew install go-task
+```
+
+**Linux**
+
+```bash
+# Ubuntu / Debian and other distributions with Snap
+sudo snap install task --classic
+
+# Fedora
+sudo dnf install go-task
+
+# Arch Linux
+sudo pacman -S go-task
+
+# Any distribution: install script (binary in ~/.local/bin, which must be in your PATH)
+sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
+```
+
+On Fedora and Arch, the binary may be named `go-task`: add `alias task=go-task` to your shell
+configuration.
+
+**Windows**
+
+```powershell
+winget install Task.Task
+# or
+scoop install task
+# or
+choco install go-task
+```
+
+**Any OS (with Node.js)**
+
+```bash
+npm install -g @go-task/cli
+```
+
+Check the installation with `task --version`. Other methods are listed in the
+[official documentation](https://taskfile.dev/docs/installation).
 
 ## Getting started
 
@@ -28,6 +75,8 @@ cd my-project
 docker compose up -d --build
 docker compose exec app composer install
 ```
+
+Or, with Task: `task init`.
 
 - Application: http://localhost:8000
 - AdminNeo (database UI): http://localhost:8089 (server `db`, credentials from `.env`)
@@ -67,6 +116,28 @@ After changing `php.ini` or `php.Dockerfile`, rebuild the image:
 ```bash
 docker compose up -d --build app
 ```
+
+## Tasks
+
+`Taskfile.yml` wraps the usual commands. Run `task` to list them.
+
+| Task                    | Description                                          |
+|-------------------------|------------------------------------------------------|
+| `task init`             | Build, start and install dependencies                |
+| `task up`               | Build and start the containers                       |
+| `task down`             | Stop the containers (keeps the database volume)      |
+| `task restart`          | Restart the containers                               |
+| `task reset`            | Stop the containers and delete the database volume   |
+| `task ps`               | List the containers                                  |
+| `task logs -- [service]`| Follow logs                                          |
+| `task shell`            | Open a shell in the PHP container                    |
+| `task install`          | Install Composer dependencies                        |
+| `task composer -- <args>` | Run Composer                                       |
+| `task console -- <args>`  | Run the Symfony console                            |
+| `task cc`               | Clear the Symfony cache                              |
+
+Arguments after `--` are passed to the underlying command, e.g.
+`task console -- make:controller`.
 
 ## Useful commands
 
