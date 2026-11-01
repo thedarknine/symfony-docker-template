@@ -12,13 +12,13 @@ tests, git hooks and a GitHub Actions CI.
 - **Doctrine ORM** and Migrations on **MySQL 9.7**
 - **Symfony Mailer**, caught by **Mailpit** in development
 
-| Service   | Container               | Image                         | Host port   | Environment |
-|-----------|-------------------------|-------------------------------|-------------|-------------|
-| `app`     | `<slug>-app`            | PHP 8.4 FPM Alpine (custom)   | -           | all         |
-| `engine`  | `<slug>-server`         | `nginx:1.30-alpine`           | `APP_PORT`  | all         |
-| `db`      | `<slug>-db`             | `mysql:9.7` (LTS)             | `DB_PORT`   | dev         |
-| `adm`     | `<slug>-adm`            | `adminneoorg/adminneo`        | `ADM_PORT`  | dev         |
-| `mailpit` | `<slug>-mailpit`        | `axllent/mailpit`             | `MAIL_PORT` | dev         |
+| Service   | Container        | Image                       | Host port   | Environment |
+| --------- | ---------------- | --------------------------- | ----------- | ----------- |
+| `app`     | `<slug>-app`     | PHP 8.4 FPM Alpine (custom) | -           | all         |
+| `engine`  | `<slug>-server`  | `nginx:1.30-alpine`         | `APP_PORT`  | all         |
+| `db`      | `<slug>-db`      | `mysql:9.7` (LTS)           | `DB_PORT`   | dev         |
+| `adm`     | `<slug>-adm`     | `adminneoorg/adminneo`      | `ADM_PORT`  | dev         |
+| `mailpit` | `<slug>-mailpit` | `axllent/mailpit`           | `MAIL_PORT` | dev         |
 
 `<slug>` is `PROJECT_SLUG` from `.env`: several projects created from this template can run
 side by side as long as they use different slugs and ports.
@@ -34,13 +34,13 @@ pcov, hadolint, gitleaks, shellcheck, shfmt and yamllint.
 
 ### Installing Task
 
-**macOS**
+#### macOS
 
 ```bash
 brew install go-task
 ```
 
-**Linux**
+#### Linux
 
 ```bash
 # Ubuntu / Debian and other distributions with Snap
@@ -59,7 +59,7 @@ sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
 On Fedora and Arch, the binary may be named `go-task`: add `alias task=go-task` to your shell
 configuration.
 
-**Windows**
+#### Windows
 
 ```powershell
 winget install Task.Task
@@ -69,7 +69,7 @@ scoop install task
 choco install go-task
 ```
 
-**Any OS (with Node.js)**
+#### Any OS (with Node.js)
 
 ```bash
 npm install -g @go-task/cli
@@ -91,9 +91,9 @@ defaults), writes them in `.env`, then builds and starts the containers, install
 dependencies, creates the database, runs the migrations and checks the project health.
 It can be run again at any time.
 
-- Application: http://localhost:8000
-- AdminNeo (database UI): http://localhost:8089 (server `db`, credentials from `.env`)
-- Mailpit (emails sent by the application): http://localhost:8025
+- Application: <http://localhost:8000>
+- AdminNeo (database UI): <http://localhost:8089> (server `db`, credentials from `.env`)
+- Mailpit (emails sent by the application): <http://localhost:8025>
 
 Run `task` to list all the available tasks.
 
@@ -114,23 +114,23 @@ task docker:build
 `.env` holds the project defaults and is committed. Override values in `.env.local`
 (git-ignored) and keep real secrets out of the repository.
 
-| Variable                         | Default          | Description                                                   |
-|----------------------------------|------------------|---------------------------------------------------------------|
-| `PROJECT_NAME`                   | `MyProject`      | Project name, also used in the PHP license headers            |
-| `PROJECT_SLUG`                   | `project`        | Prefix of the container, network and volume names            |
-| `APP_PORT`                       | `8000`           | Application (nginx) host port                                 |
-| `DB_PORT`                        | `3306`           | MySQL host port                                               |
-| `ADM_PORT`                       | `8089`           | AdminNeo host port                                            |
-| `MAIL_PORT`                      | `8025`           | Mailpit web UI host port                                      |
-| `PHP_VERSION`                    | `8.4`            | PHP image version                                             |
-| `MYSQL_VERSION`                  | `9.7`            | MySQL image version                                           |
-| `NGINX_VERSION`                  | `1.30`           | Nginx image version                                           |
-| `DB_ROOT_PASS`                   | `admin`          | MySQL root password                                           |
-| `DB_NAME` / `DB_USER` / `DB_PASS` | `project` / `project` / `ChangeMe` | Application database, created on first start |
-| `DATABASE_URL`                   | built from `DB_*` | Doctrine connection, credentials defined once               |
-| `MAILER_DSN`                     | `smtp://mailpit:1025` | Every email goes to Mailpit in development               |
-| `COMPOSE_FILE`                   | base + dev files | Compose files loaded by `docker compose` and the tasks        |
-| `HOST_UID` / `HOST_GID`          | `82` (www-data)  | Linux only, in `.env.local`: ids of the `app` user            |
+| Variable                          | Default                            | Description                                            |
+| --------------------------------- | ---------------------------------- | ------------------------------------------------------ |
+| `PROJECT_NAME`                    | `MyProject`                        | Project name, also used in the PHP license headers     |
+| `PROJECT_SLUG`                    | `project`                          | Prefix of the container, network and volume names      |
+| `APP_PORT`                        | `8000`                             | Application (nginx) host port                          |
+| `DB_PORT`                         | `3306`                             | MySQL host port                                        |
+| `ADM_PORT`                        | `8089`                             | AdminNeo host port                                     |
+| `MAIL_PORT`                       | `8025`                             | Mailpit web UI host port                               |
+| `PHP_VERSION`                     | `8.4`                              | PHP image version                                      |
+| `MYSQL_VERSION`                   | `9.7`                              | MySQL image version                                    |
+| `NGINX_VERSION`                   | `1.30`                             | Nginx image version                                    |
+| `DB_ROOT_PASS`                    | `admin`                            | MySQL root password                                    |
+| `DB_NAME` / `DB_USER` / `DB_PASS` | `project` / `project` / `ChangeMe` | Application database, created on first start           |
+| `DATABASE_URL`                    | built from `DB_*`                  | Doctrine connection, credentials defined once          |
+| `MAILER_DSN`                      | `smtp://mailpit:1025`              | Every email goes to Mailpit in development             |
+| `COMPOSE_FILE`                    | base + dev files                   | Compose files loaded by `docker compose` and the tasks |
+| `HOST_UID` / `HOST_GID`           | `82` (www-data)                    | Linux only, in `.env.local`: ids of the `app` user     |
 
 ### Docker Compose files
 
@@ -144,7 +144,7 @@ task docker:build
 
 ## Project structure
 
-```
+```bash
 .docker/
 ├── nginx/default.conf   # Nginx virtual host
 ├── php/php.ini          # PHP settings (OPcache, realpath cache, timezone, limits)
@@ -174,31 +174,32 @@ Arguments after `--` are passed to the underlying command, e.g.
 `task symfony:console -- make:entity`. Tasks marked `fix=1` only check by default and apply
 the fixes with `fix=1`, e.g. `task cs:all fix=1`.
 
-| Domain      | Tasks                                                                      |
-|-------------|----------------------------------------------------------------------------|
-| Shortcuts   | `init`, `up`, `down`, `restart`, `cc`, `test`, `health`, `qa`              |
-| `docker:`   | `build`, `up`, `down`, `restart`, `reset`, `ps`, `logs`, `shell`           |
-| `symfony:`  | `install`, `composer`, `pnpm`, `console`, `cc`, `tailwind`, `watch`, `icons`, `build-prod` |
-| `db:`       | `create`, `diff`, `migrate`, `reset`                                       |
-| `test:`     | `all`, `unit`, `functional`, `coverage`                                    |
-| `cs:`       | `all`, `php`, `twig`, `front` (`fix=1`)                                    |
-| `lint:`     | `all`, `yaml`, `shell`, `docker`, `secrets`                                |
-| `quality:`  | `all`, `phpstan`, `rector` (`fix=1`), `audit`, `grumphp`, `hooks`          |
-| `check:`    | `health`, `tools`, `docker`, `env`, `directories`, `ports`, `containers`, `dependencies`, `database` |
+| Domain     | Tasks                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------------- |
+| Shortcuts  | `init`, `up`, `down`, `restart`, `cc`, `test`, `health`, `qa`                                        |
+| `docker:`  | `build`, `up`, `down`, `restart`, `reset`, `ps`, `logs`, `shell`                                     |
+| `symfony:` | `install`, `composer`, `pnpm`, `console`, `cc`, `tailwind`, `watch`, `icons`, `build-prod`           |
+| `db:`      | `create`, `diff`, `migrate`, `reset`                                                                 |
+| `test:`    | `all`, `unit`, `functional`, `coverage`                                                              |
+| `cs:`      | `all`, `php`, `twig`, `front` (`fix=1`)                                                              |
+| `lint:`    | `all`, `yaml`, `shell`, `docker`, `secrets`                                                          |
+| `quality:` | `all`, `phpstan`, `rector` (`fix=1`), `audit`, `grumphp`, `hooks`                                    |
+| `check:`   | `health`, `tools`, `docker`, `env`, `directories`, `ports`, `containers`, `dependencies`, `database` |
 
 ## Code quality
 
-| Tool                          | Task             | Checks                                                    |
-|-------------------------------|------------------|-----------------------------------------------------------|
-| PHP CS Fixer                  | `cs:php`         | PHP coding standards, MIT license header                  |
-| Twig CS Fixer, `lint:twig`    | `cs:twig`        | Twig coding standards and syntax                          |
-| Biome                         | `cs:front`       | JS and CSS                                                |
-| yamllint, shellcheck, shfmt, hadolint | `lint:*` | YAML, shell scripts, Dockerfile                           |
-| gitleaks                      | `lint:secrets`   | Secrets in the git history                                |
-| PHPStan (level 6)             | `quality:phpstan`| Static analysis, with the Symfony and PHPUnit extensions  |
-| Rector                        | `quality:rector` | PHP, Symfony, Twig, Doctrine and PHPUnit upgrades         |
-| `composer audit`, `pnpm audit`| `quality:audit`  | Known vulnerabilities in the dependencies                 |
-| PHPUnit                       | `test:*`         | Unit and functional tests                                 |
+| Tool                                  | Task              | Checks                                                   |
+| ------------------------------------- | ----------------- | -------------------------------------------------------- |
+| PHP CS Fixer                          | `cs:php`          | PHP coding standards, MIT license header                 |
+| Twig CS Fixer, `lint:twig`            | `cs:twig`         | Twig coding standards and syntax                         |
+| Biome                                 | `cs:front`        | JS and CSS                                               |
+| yamllint, shellcheck, shfmt, hadolint | `lint:*`          | YAML, shell scripts, Dockerfile                          |
+| markdownlint                          | `lint:markdown`   | Markdown files                                           |
+| gitleaks                              | `lint:secrets`    | Secrets in the git history                               |
+| PHPStan (level 6)                     | `quality:phpstan` | Static analysis, with the Symfony and PHPUnit extensions |
+| Rector                                | `quality:rector`  | PHP, Symfony, Twig, Doctrine and PHPUnit upgrades        |
+| `composer audit`, `pnpm audit`        | `quality:audit`   | Known vulnerabilities in the dependencies                |
+| PHPUnit                               | `test:*`          | Unit and functional tests                                |
 
 `task qa` runs everything (cs, lint, quality, tests) before committing. `task qa fix=1`
 applies the coding standards fixes but never the Rector refactorings, which stay a
