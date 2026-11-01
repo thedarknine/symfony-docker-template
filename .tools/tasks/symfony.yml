@@ -3,10 +3,11 @@ version: '3'
 
 tasks:
     install:
-        desc: Install Composer dependencies
+        desc: Install Composer dependencies and build Tailwind CSS
         cmds:
             - '{{.UI}} subtitle "📦 Installing Composer dependencies"'
             - '{{.EXEC}} composer install || { {{.UI}} error "Composer install failed."; exit 1; }'
+            - '{{.EXEC}} bin/console tailwind:build || { {{.UI}} error "Tailwind build failed."; exit 1; }'
             - '{{.UI}} success "Composer dependencies installed."'
 
     composer:
@@ -25,3 +26,18 @@ tasks:
             - '{{.UI}} subtitle "🧹 Clearing the Symfony cache"'
             - '{{.EXEC}} bin/console cache:clear {{.CLI_ARGS}} || { {{.UI}} error "Cache clear failed."; exit 1; }'
             - '{{.UI}} success "Symfony cache cleared."'
+
+    tailwind:
+        desc: Build Tailwind CSS (task symfony:tailwind -- --minify)
+        cmds:
+            - '{{.UI}} subtitle "🎨 Building Tailwind CSS"'
+            - >-
+              {{.EXEC}} bin/console tailwind:build {{.CLI_ARGS}}
+              || { {{.UI}} error "Tailwind build failed."; exit 1; }
+            - '{{.UI}} success "Tailwind CSS built."'
+
+    watch:
+        desc: Watch Tailwind CSS changes and re-build
+        cmds:
+            - '{{.UI}} title "👀 Watching Tailwind CSS changes (Ctrl+C to stop)"'
+            - '{{.EXEC}} bin/console tailwind:build --watch'

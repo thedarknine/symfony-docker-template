@@ -54,7 +54,7 @@ tasks:
         desc: Clear the Symfony cache
         cmds:
             - task: symfony:cc
-    
+
     health:
         desc: Check system requirements and project health
         cmds:
