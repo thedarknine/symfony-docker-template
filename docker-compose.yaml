@@ -1,6 +1,6 @@
 services:
   app:
-    container_name: project-app
+    container_name: ${PROJECT_SLUG:-project}-app
     build:
       context: .docker
       dockerfile: php.Dockerfile
@@ -12,10 +12,10 @@ services:
     volumes:
       - ./:/var/www/html
     networks:
-      - symfony-ntwk
+      - app-network
 
   engine:
-    container_name: project-server
+    container_name: ${PROJECT_SLUG:-project}-server
     image: nginx:${NGINX_VERSION:-1.30}-alpine
     restart: unless-stopped
     ports:
@@ -24,11 +24,12 @@ services:
       - ./:/var/www/html:ro
       - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
-      - symfony-ntwk
+      - app-network
     depends_on:
       - app
 
+# Names are prefixed with PROJECT_SLUG (.env) so several projects from this template can run side by side
 networks:
-  symfony-ntwk:
+  app-network:
     driver: bridge
-    name: symfony-ntwk
+    name: ${PROJECT_SLUG:-project}-network

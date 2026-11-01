@@ -14,7 +14,7 @@ services:
 
   db:
     image: mysql:${MYSQL_VERSION:-9.7}
-    container_name: project-db
+    container_name: ${PROJECT_SLUG:-project}-db
     restart: unless-stopped
     env_file:
       - .env
@@ -29,7 +29,7 @@ services:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
     networks:
-      - symfony-ntwk
+      - app-network
     volumes:
       - db-data:/var/lib/mysql
     healthcheck:
@@ -41,7 +41,7 @@ services:
 
   adm:
     image: adminneoorg/adminneo:latest
-    container_name: project-adm
+    container_name: ${PROJECT_SLUG:-project}-adm
     env_file:
       - .env
     ports:
@@ -54,8 +54,8 @@ services:
       - NEO_DEFAULT_SERVER=db
       - NEO_DEFAULT_DATABASE=${DB_NAME}
     networks:
-      - symfony-ntwk
+      - app-network
 
 volumes:
   db-data:
-    name: project-db-data
+    name: ${PROJECT_SLUG:-project}-db-data
