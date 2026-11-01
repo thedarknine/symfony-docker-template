@@ -32,6 +32,12 @@ jobs:
               with:
                   version: 3.x
 
+            # The checkout belongs to the runner user: the app container must use the same ids
+            - name: Use the runner user in the app container
+              run: |
+                  echo "HOST_UID=$(id -u)" >> "$GITHUB_ENV"
+                  echo "HOST_GID=$(id -g)" >> "$GITHUB_ENV"
+
             - name: Start the containers
               run: task up
 
