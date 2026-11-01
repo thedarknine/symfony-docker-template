@@ -6,6 +6,7 @@ version: '3'
 vars:
     CONFIG_DIR: .tools/config
     SHELL_FILES: .docker/*.sh .tools/scripts/*.sh
+    YAML_FILES: .tools/ Taskfile.yml docker-compose.yaml docker-compose.dev.yaml
 
 tasks:
     all:
@@ -31,7 +32,7 @@ tasks:
         cmds:
             - '{{.UI}} subtitle "🔭 Validating YAML files with yamllint"'
             - >-
-              {{.EXEC}} yamllint -c {{.CONFIG_DIR}}/yamllint.yaml .tools/ Taskfile.yml docker-compose.yaml
+              {{.EXEC}} yamllint -c {{.CONFIG_DIR}}/yamllint.yaml {{.YAML_FILES}}
               || { {{.UI}} error "YAML linting failed."; exit 1; }
             - '{{.UI}} success "YAML linting completed."'
 

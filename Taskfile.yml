@@ -25,6 +25,9 @@ includes:
     check:
         taskfile: ./.tools/tasks/check.yml
 
+    db:
+        taskfile: ./.tools/tasks/db.yml
+
 tasks:
     default:
         cmds:

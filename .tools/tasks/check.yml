@@ -28,11 +28,13 @@ tasks:
               vars: { NESTED: '1' }
             - task: dependencies
               vars: { NESTED: '1' }
+            - task: database
+              vars: { NESTED: '1' }
             - '{{.UI}} elapsed {{.START}}'
             - >-
               {{.UI}} success "Tools are installed" "Docker is running" "Environment is configured"
               "Tools directories exist" "Ports are available" "Containers are running"
-              "Dependencies are installed" "All systems are ok! The project is ready."
+              "Dependencies are installed" "Database is reachable" "All systems are ok! The project is ready."
 
     tools:
         desc: Check if required CLI tools are installed
@@ -95,7 +97,7 @@ tasks:
         cmds:
             - '{{.UI}} subtitle "🔎 Checking network ports..."'
             - |
-              # Published ports are read from docker-compose.yaml, no list to maintain
+              # Published ports are read from the compose files, no list to maintain
               ports=$({{.COMPOSE}} config --format json | jq -r '.services[].ports[]?.published' | sort -un)
               project_ids=$({{.COMPOSE}} ps -q --no-trunc 2>/dev/null | tr '\n' ' ')
               conflict=0
@@ -118,7 +120,7 @@ tasks:
                   fi
               done
               if [ "$conflict" -eq 1 ]; then
-                  {{.UI}} error "$@" "Stop the other services, or change the ports in docker-compose.yaml."
+                  {{.UI}} error "$@" "Stop the other services, or change the ports in the compose files."
                   exit 1
               fi
               {{.UI}} success "$@"
@@ -153,3 +155,13 @@ tasks:
               {{.EXEC}} test -d vendor \
                   || { {{.UI}} error "'vendor' directory is missing." "Install it with: task symfony:install"; exit 1; }
               {{.UI}} success "PHP dependencies - vendor - are installed."
+
+    database:
+        desc: Check the database connection
+        env: { UI_NESTED: '{{.NESTED}}' }
+        cmds:
+            - '{{.UI}} subtitle "🔎 Checking database connection..."'
+            - >-
+              {{.EXEC}} bin/console dbal:run-sql "SELECT 1" >/dev/null 2>&1
+              || { {{.UI}} error "Cannot connect to the database." "Check DATABASE_URL, then: task docker:ps"; exit 1; }
+            - '{{.UI}} success "Database is reachable."'
