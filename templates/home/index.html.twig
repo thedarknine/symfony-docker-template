@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ project_name }}{% endblock %}
+
+{% block body %}
+    <main>
+        <h1>{{ project_name }}</h1>
+        <p>{{ 'now'|format_date('full', locale='fr') }}</p>
+    </main>
+{% endblock %}
