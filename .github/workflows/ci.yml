@@ -32,7 +32,7 @@ jobs:
 
             # BuildKit builder able to read and write the GitHub Actions cache
             - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v3
+              uses: docker/setup-buildx-action@v4
 
             # Exposes the cache URL and token to "docker compose build" (only available to actions otherwise)
             - name: Expose the GitHub Actions runtime
