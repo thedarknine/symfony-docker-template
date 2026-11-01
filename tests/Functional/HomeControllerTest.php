@@ -18,7 +18,7 @@ final class HomeControllerTest extends WebTestCase
 {
     public function testHomePageIsDisplayed(): void
     {
-        $client = static::createClient();
+        $client = self::createClient();
         $client->request('GET', '/');
 
         self::assertResponseIsSuccessful();

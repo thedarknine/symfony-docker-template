@@ -40,8 +40,8 @@ final class AlertTest extends TestCase
     public function testUnknownTypeIsRejected(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Unknown alert type "warning"');
+        $this->expectExceptionMessageIsOrContains('Unknown alert type "warning"');
 
-        (new Alert())->validateType(['type' => 'warning']);
+        new Alert()->validateType(['type' => 'warning']);
     }
 }
