@@ -54,6 +54,7 @@ slug=$(get_value PROJECT_SLUG)
 app_port=$(get_value APP_PORT)
 db_port=$(get_value DB_PORT)
 adm_port=$(get_value ADM_PORT)
+mail_port=$(get_value MAIL_PORT)
 
 if [ -t 0 ]; then
     display_info "Press Enter to keep the value in brackets."
@@ -75,11 +76,12 @@ if [ -t 0 ]; then
         display_warning "Invalid slug: use lowercase letters, digits and dashes, e.g. $(slugify "$slug")"
     done
 
-    for var in app_port db_port adm_port; do
+    for var in app_port db_port adm_port mail_port; do
         case "$var" in
         app_port) label="Application port" ;;
         db_port) label="MySQL port" ;;
         adm_port) label="AdminNeo port" ;;
+        mail_port) label="Mailpit port" ;;
         esac
         while :; do
             value=$(ask "$label" "${!var}")
@@ -99,10 +101,11 @@ set_value PROJECT_SLUG "$slug" "$ENV_FILE"
 set_value APP_PORT "$app_port" "$ENV_FILE"
 set_value DB_PORT "$db_port" "$ENV_FILE"
 set_value ADM_PORT "$adm_port" "$ENV_FILE"
+set_value MAIL_PORT "$mail_port" "$ENV_FILE"
 
 summary=(
     "Project: $name ($slug)"
-    "Ports: application $app_port, MySQL $db_port, AdminNeo $adm_port"
+    "Ports: application $app_port, MySQL $db_port, AdminNeo $adm_port, Mailpit $mail_port"
 )
 
 # Docker Desktop maps the file ownership, Linux needs the host ids in the image (see php.Dockerfile)

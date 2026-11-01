@@ -56,6 +56,16 @@ services:
     networks:
       - app-network
 
+  # Catches every email sent by the application: web UI on MAIL_PORT, SMTP on mailpit:1025
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: ${PROJECT_SLUG:-project}-mailpit
+    restart: unless-stopped
+    ports:
+      - "${MAIL_PORT:-8025}:8025"
+    networks:
+      - app-network
+
 volumes:
   db-data:
     name: ${PROJECT_SLUG:-project}-db-data
