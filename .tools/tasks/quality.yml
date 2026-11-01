@@ -1,0 +1,31 @@
+# https://taskfile.dev
+version: '3'
+
+# UI_NESTED hides the success box of each quality check when run from quality:all
+
+tasks:
+    all:
+        desc: Run all quality checks - phpstan
+        vars:
+            START: { sh: date +%s }
+        cmds:
+            - '{{.UI}} title "🔍 Running all quality checks"'
+            - task: phpstan
+              vars: { NESTED: '1' }
+            - '{{.UI}} elapsed {{.START}}'
+            - '{{.UI}} success "All quality checks passed."'
+
+    phpstan:
+        desc: Analyse PHP code with PHPStan (task quality:phpstan -- --generate-baseline)
+        env: { UI_NESTED: '{{.NESTED}}' }
+        cmds:
+            - '{{.UI}} subtitle "🔬 Analysing PHP code with PHPStan"'
+            # The Symfony extension reads the compiled dev container
+            - >-
+              {{.EXEC}} bin/console cache:warmup --env=dev --quiet
+              || { {{.UI}} error "Symfony cache warmup failed."; exit 1; }
+            - >-
+              {{.EXEC}} vendor/bin/phpstan analyse --memory-limit=512M
+              --configuration={{.CONFIG_DIR}}/phpstan.neon {{.CLI_ARGS}}
+              || { {{.UI}} error "PHPStan found issues."; exit 1; }
+            - '{{.UI}} success "PHPStan analysis completed."'

@@ -37,6 +37,9 @@ includes:
     test:
         taskfile: ./.tools/tasks/test.yml
 
+    quality:
+        taskfile: ./.tools/tasks/quality.yml
+
 tasks:
     default:
         cmds:

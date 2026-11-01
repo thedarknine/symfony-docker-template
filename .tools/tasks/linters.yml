@@ -9,7 +9,7 @@ vars:
 
 tasks:
     all:
-        desc: Run all linters (yaml, shell, docker, secrets)
+        desc: Run all linters - yaml, shell, docker, secrets
         vars:
             START: { sh: date +%s }
         cmds:
