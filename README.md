@@ -183,7 +183,7 @@ the fixes with `fix=1`, e.g. `task cs:all fix=1`.
 | `test:`    | `all`, `unit`, `functional`, `coverage`                                                              |
 | `cs:`      | `all`, `php`, `twig`, `front` (`fix=1`)                                                              |
 | `lint:`    | `all`, `yaml`, `shell`, `docker`, `secrets`                                                          |
-| `quality:` | `all`, `phpstan`, `rector` (`fix=1`), `audit`, `grumphp`, `hooks`                                    |
+| `quality:` | `all`, `phpstan`, `rector` (`fix=1`), `knip`, `audit`, `grumphp`, `hooks`                            |
 | `check:`   | `health`, `tools`, `docker`, `env`, `directories`, `ports`, `containers`, `dependencies`, `database` |
 
 ## Code quality
@@ -198,6 +198,7 @@ the fixes with `fix=1`, e.g. `task cs:all fix=1`.
 | gitleaks                              | `lint:secrets`    | Secrets in the git history                               |
 | PHPStan (level 6)                     | `quality:phpstan` | Static analysis, with the Symfony and PHPUnit extensions |
 | Rector                                | `quality:rector`  | PHP, Symfony, Twig, Doctrine and PHPUnit upgrades        |
+| knip                                  | `quality:knip`    | Unused pnpm packages, JavaScript files and exports       |
 | `composer audit`, `pnpm audit`        | `quality:audit`   | Known vulnerabilities in the dependencies                |
 | PHPUnit                               | `test:*`          | Unit and functional tests                                |
 

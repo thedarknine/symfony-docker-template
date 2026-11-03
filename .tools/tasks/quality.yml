@@ -6,7 +6,7 @@ version: '3'
 
 tasks:
     all:
-        desc: Run all quality checks - phpstan, rector, audit
+        desc: Run all quality checks - phpstan, rector, knip, audit
         vars:
             START: { sh: date +%s }
         cmds:
@@ -15,6 +15,8 @@ tasks:
               vars: { NESTED: '1' }
             - task: rector
               vars: { NESTED: '1', NO_REFACTOR: '{{.NO_REFACTOR}}' }
+            - task: knip
+              vars: { NESTED: '1' }
             - task: audit
               vars: { NESTED: '1' }
             - '{{.UI}} elapsed {{.START}}'
@@ -34,6 +36,17 @@ tasks:
               --configuration={{.CONFIG_DIR}}/phpstan.neon {{.CLI_ARGS}}
               || { {{.UI}} error "PHPStan found issues."; exit 1; }
             - '{{.UI}} success "PHPStan analysis completed."'
+
+    knip:
+        desc: Find the unused pnpm packages, files and exports with knip
+        env: { UI_NESTED: '{{.NESTED}}' }
+        cmds:
+            - '{{.UI}} subtitle "✂️ Looking for unused packages, files and exports with knip"'
+            # Importmap packages and the dev tools called from the Taskfile are ignored in knip.json
+            - >-
+              {{.EXEC}} pnpm exec knip --config {{.CONFIG_DIR}}/knip.json
+              || { {{.UI}} error "knip found unused or missing packages, files or exports."; exit 1; }
+            - '{{.UI}} success "knip found nothing unused."'
 
     rector:
         desc: Check code upgrades and refactorings with Rector (fix=1)
