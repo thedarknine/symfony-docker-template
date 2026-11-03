@@ -1,0 +1,9 @@
+{
+    "$schema": "https://unpkg.com/knip@6/schema.json",
+    "entry": ["assets/app.js", "assets/controllers/*_controller.js"],
+    "project": ["assets/**/*.js", "!assets/vendor/**"],
+    "commitlint": {
+        "config": [".tools/config/commitlint.config.cjs"]
+    },
+    "ignoreDependencies": ["@biomejs/biome", "markdownlint-cli2"]
+}

@@ -55,6 +55,14 @@ jobs:
             - name: Install dependencies
               run: task symfony:install
 
+            # Migrations rather than the entities: checks that they replay on an empty database,
+            # then that they match the entities (a forgotten migration fails here)
+            - name: Set up the database
+              run: |
+                  task db:create
+                  task db:migrate
+                  task symfony:console -- doctrine:schema:validate
+
             - name: Run the QA suite
               run: task qa
 

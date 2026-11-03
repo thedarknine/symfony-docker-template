@@ -84,6 +84,21 @@ Install `symfony/test-pack` if it isn't already. Functional/HTTP tests extend
 until it has a test that exercises it the way a caller would, an HTTP request for
 a controller or a service call for a service, not just "it didn't throw."
 
+## Database migrations
+
+- Schema changes go through migrations (`task db:diff`, then `task db:migrate`), never
+  `doctrine:schema:update`. The CI replays them on an empty database and runs
+  `doctrine:schema:validate`, so a forgotten migration fails there.
+- Squashing the migrations into one baseline: generate it with
+  `doctrine:migrations:dump-schema`, then fix the generated file before using it:
+  - add the foreign keys after every `CREATE TABLE` (it adds each one right after its
+    table, which fails when the referenced table comes later);
+  - check that `down()` drops every table, between `SET FOREIGN_KEY_CHECKS = 0` and `1`;
+  - keep a single platform `abortIf`.
+- `doctrine:migrations:rollup` marks the baseline as executed without running it: test
+  it on an empty database (`task db:reset`) before relying on it, and run `rollup` once
+  on every existing database, production included.
+
 ## Code style
 
 Symfony's coding standard, the `@Symfony` php-cs-fixer ruleset (a PSR-12-derived
