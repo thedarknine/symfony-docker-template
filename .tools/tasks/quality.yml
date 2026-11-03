@@ -64,7 +64,7 @@ tasks:
               {{.EXEC}} composer audit
               || { {{.UI}} error "Composer audit failed." "Update: task symfony:composer -- update <package>"; exit 1; }
             - >-
-              {{.EXEC}} pnpm audit
+              {{.EXEC}} pnpm audit --prod
               || { {{.UI}} error "pnpm audit failed." "Update: task symfony:pnpm -- update <package>"; exit 1; }
             - '{{.UI}} success "No known vulnerabilities."'
     grumphp:
