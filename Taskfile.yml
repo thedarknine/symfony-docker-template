@@ -24,7 +24,7 @@ includes:
         taskfile: ./.tools/tasks/symfony.yml
 
     lint:
-        taskfile: ./.tools/tasks/linters.yml
+        taskfile: ./.tools/tasks/lint.yml
 
     cs:
         taskfile: ./.tools/tasks/cs.yml
@@ -40,6 +40,12 @@ includes:
 
     quality:
         taskfile: ./.tools/tasks/quality.yml
+
+    utils:
+        taskfile: ./.tools/tasks/utils.yml
+
+    clean:
+        taskfile: ./.tools/tasks/clean.yml
 
 tasks:
     default:
@@ -90,6 +96,39 @@ tasks:
             - task: quality:all
               vars: { NO_REFACTOR: '1' }
             - task: test:all
+
+    update:
+        desc: Update the Docker images, Composer and pnpm dependencies
+        prompt: This pulls the Docker images, rebuilds the containers and updates Composer and pnpm. Continue?
+        preconditions:
+            - sh: '[ "{{.ENVIRONMENT}}" != "prod" ] && [ "{{.ENVIRONMENT}}" != "production" ]'
+              msg: Authorised only in the development environment
+        vars:
+            START: { sh: date +%s }
+        cmds:
+            - '{{.UI}} title "⬇️ Updating the project"'
+            - task: symfony:outdated
+            - '{{.UI}} subtitle "🐳 Pulling the Docker images"'
+            - '{{.COMPOSE}} pull || { {{.UI}} error "Docker pull failed."; exit 1; }'
+            # pull only fetches the ready-made images: --pull refreshes the base image of the PHP Dockerfile
+            - '{{.COMPOSE}} build --pull || { {{.UI}} error "Docker build failed."; exit 1; }'
+            - task: docker:down
+              vars: { NESTED: '1' }
+            - task: docker:up
+              vars: { NESTED: '1' }
+            - '{{.UI}} subtitle "🐘 Updating the Composer dependencies"'
+            - '{{.EXEC}} composer update || { {{.UI}} error "Composer update failed."; exit 1; }'
+            - '{{.UI}} subtitle "📦 Updating the pnpm dependencies"'
+            - '{{.EXEC}} pnpm update || { {{.UI}} error "pnpm update failed."; exit 1; }'
+            # Rebuild Tailwind CSS and the icons, which may depend on the updated packages
+            - task: symfony:tailwind
+              vars: { NESTED: '1' }
+            - task: symfony:icons
+              vars: { NESTED: '1' }
+            - '{{.UI}} elapsed {{.START}}'
+            - >-
+              {{.UI}} success "Docker images updated" "Containers rebuilt and restarted"
+              "Composer dependencies updated" "pnpm dependencies updated" "Tailwind CSS and icons rebuilt"
 
     init:
         desc: Set up the project - name, ports, containers, dependencies, database

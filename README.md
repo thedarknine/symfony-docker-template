@@ -174,17 +174,19 @@ Arguments after `--` are passed to the underlying command, e.g.
 `task symfony:console -- make:entity`. Tasks marked `fix=1` only check by default and apply
 the fixes with `fix=1`, e.g. `task cs:all fix=1`.
 
-| Domain     | Tasks                                                                                                |
-| ---------- | ---------------------------------------------------------------------------------------------------- |
-| Shortcuts  | `init`, `up`, `down`, `restart`, `cc`, `test`, `health`, `qa`                                        |
-| `docker:`  | `build`, `up`, `down`, `restart`, `reset`, `ps`, `logs`, `shell`                                     |
-| `symfony:` | `install`, `composer`, `pnpm`, `console`, `cc`, `tailwind`, `watch`, `icons`, `build-prod`           |
-| `db:`      | `create`, `diff`, `migrate`, `reset`                                                                 |
-| `test:`    | `all`, `unit`, `functional`, `coverage`                                                              |
-| `cs:`      | `all`, `php`, `twig`, `front` (`fix=1`)                                                              |
-| `lint:`    | `all`, `yaml`, `shell`, `docker`, `secrets`                                                          |
-| `quality:` | `all`, `phpstan`, `rector` (`fix=1`), `knip`, `audit`, `grumphp`, `hooks`                            |
-| `check:`   | `health`, `tools`, `docker`, `env`, `directories`, `ports`, `containers`, `dependencies`, `database` |
+| Domain     | Tasks                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------ |
+| Shortcuts  | `init`, `up`, `down`, `restart`, `cc`, `test`, `health`, `qa`, `update`                                |
+| `docker:`  | `build`, `up`, `down`, `restart`, `reset`, `ps`, `logs`, `shell`                                       |
+| `symfony:` | `install`, `composer`, `pnpm`, `console`, `cc`, `tailwind`, `watch`, `icons`, `build-prod`, `outdated` |
+| `db:`      | `create`, `diff`, `migrate`, `reset`                                                                   |
+| `test:`    | `all`, `unit`, `functional`, `coverage`                                                                |
+| `cs:`      | `all`, `php`, `twig`, `front` (`fix=1`)                                                                |
+| `lint:`    | `all`, `yaml`, `markdown`, `shell`, `docker`, `secrets`                                                |
+| `quality:` | `all`, `phpstan`, `rector` (`fix=1`), `knip`, `audit`, `grumphp`, `hooks`                              |
+| `clean:`   | `all`, `build`, `cache`, `test`, `composer`, `pnpm`                                                    |
+| `utils:`   | `secret`, `prune`                                                                                      |
+| `check:`   | `health`, `tools`, `docker`, `env`, `directories`, `ports`, `containers`, `dependencies`, `database`   |
 
 ## Code quality
 

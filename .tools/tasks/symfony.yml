@@ -36,6 +36,7 @@ tasks:
 
     tailwind:
         desc: Build Tailwind CSS (task symfony:tailwind -- --minify)
+        env: { UI_NESTED: '{{.NESTED}}' }
         cmds:
             - '{{.UI}} subtitle "🎨 Building Tailwind CSS"'
             - >-
@@ -51,6 +52,7 @@ tasks:
 
     icons:
         desc: Download the icons used in the templates to assets/icons/
+        env: { UI_NESTED: '{{.NESTED}}' }
         cmds:
             - '{{.UI}} subtitle "🖼️ Locking UX icons"'
             - >-
@@ -66,3 +68,12 @@ tasks:
               {{.EXEC}} sh {{.TOOLS_DIR}}/scripts/build-prod.sh
               || { {{.UI}} error "Production build failed."; exit 1; }
             - '{{.UI}} success "Production build succeeded." "Your working copy is unchanged."'
+
+    outdated:
+        desc: List the outdated direct dependencies (Composer and pnpm)
+        cmds:
+            - '{{.UI}} subtitle "🔍 Checking for outdated dependencies"'
+            - '{{.EXEC}} composer outdated --direct'
+            # pnpm exits with 1 when something is outdated: that is the expected result here
+            - '{{.EXEC}} pnpm outdated || true'
+            - '{{.UI}} success "Outdated dependencies checked."'
