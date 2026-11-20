@@ -15,6 +15,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # The same script is used by the GitLab CI job, so CI and local stay identical.
 # TARGETARCH is set automatically by BuildKit (amd64 or arm64).
 ARG TARGETARCH
+ARG PNPM_VERSION
 COPY install-tools.sh /tmp/install-tools.sh
 RUN sh /tmp/install-tools.sh && rm /tmp/install-tools.sh
 

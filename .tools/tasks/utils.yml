@@ -1,0 +1,19 @@
+# https://taskfile.dev
+version: '3'
+
+# Small helpers that fit no other domain
+
+tasks:
+    secret:
+        desc: Generate a new APP_SECRET and display it
+        vars:
+            SECRET: { sh: openssl rand -hex 32 }
+        cmds:
+            - '{{.UI}} success "APP_SECRET generated - copy it to .env.local:" "{{.SECRET}}"'
+
+    prune:
+        desc: Prune the pnpm store and list the unused packages, files and exports with knip
+        cmds:
+            - '{{.UI}} subtitle "🧹 Pruning the pnpm store"'
+            - '{{.EXEC}} pnpm store prune'
+            - task: :quality:knip

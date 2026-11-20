@@ -3,11 +3,11 @@
     "private": true,
     "description": "Frontend tooling only: assets are served by Symfony AssetMapper.",
     "license": "MIT",
-    "packageManager": "pnpm@12.16.1",
+    "packageManager": "pnpm@12.21.0",
     "devDependencies": {
-        "@biomejs/biome": "2.6.4",
+        "@biomejs/biome": "2.6.8",
         "@commitlint/cli": "21.2.4",
-        "knip": "^6.44.1",
-        "markdownlint-cli2": "0.24.0"
+        "knip": "^6.46.1",
+        "markdownlint-cli2": "0.24.1"
     }
 }
